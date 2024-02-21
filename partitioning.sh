@@ -19,14 +19,13 @@ fi
 DEVICE_DISK=$1
 DISTRO=$2
 
+## partitioning, formatting and mounting
+parted -s "$DEVICE_DISK" mklabel gpt mkpart ESP fat32 1MiB 1GiB set 1 boot on mkpart "root" 1GiB 100%
+
 # quirk to handle nvme naming
 if [[ "$DEVICE_DISK" == *"nvme"* ]]; then
   DEVICE_DISK+="p"
 fi
-
-## partitioning, formatting and mounting
-
-parted -s "$DEVICE_DISK" mklabel gpt mkpart ESP fat32 1MiB 513MiB set 1 boot on mkpart "root" 513MiB 100%
 
 # root partition
 cryptsetup luksFormat -y -v "${DEVICE_DISK}"2
