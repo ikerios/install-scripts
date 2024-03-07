@@ -22,7 +22,7 @@ reflector -c Italy -a 4 --save /etc/pacman.d/mirrorlist
 
 systemctl enable NetworkManager
 systemctl enable sshd
-systemctl enable fstrim.timer
+#systemctl enable fstrim.timer
 
 useradd -m $INST_USER
 echo $INST_USER:$INST_PWD | chpasswd

@@ -9,6 +9,3 @@ mount /dev/nvme0n1p1 /mnt/boot
 
 cryptsetup open /dev/nvme0n1p2 cryptswap
 swapon /dev/mapper/cryptswap
-
-#grub-install --removable --recheck --target=x86_64-efi --efi-directory=/boot --bootloader-id=ARCH
-#grub-mkconfig -o /boot/grub/grub.cfg

@@ -7,19 +7,11 @@
 {
   imports =
     [
-      # Include the results of the hardware scan.
       ./hardware-configuration.nix
-
-      # custom infinity setup
       ./infinity.nix
-
-      # common desktop
+      ./plymouth.nix
       ./desktop.nix
-
-      # virtualization (qemu, libvirt and podman)
       ./virtualization.nix
-
-      # containers
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -41,7 +33,9 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     adw-gtk3
+    b2sum    
     blackbox-terminal
+    btop    
     btrfs-progs
     discord
     dosfstools
@@ -61,13 +55,14 @@
     gnomeExtensions.quick-settings-tweaker
     gnomeExtensions.tiling-assistant
     gparted
-    htop
+    htop  
     kora-icon-theme
     libappindicator
     libreoffice-fresh
     neofetch
     nixpkgs-fmt
     nmap
+    nvd
     obs-studio
     onlyoffice-bin
     pciutils
@@ -92,14 +87,14 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
+  services.openssh.openFirewall = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  #networking.firewall.enable = false;
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "23.11";
 
 }

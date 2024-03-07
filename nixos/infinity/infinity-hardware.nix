@@ -2,7 +2,7 @@
 
 let
   #define here uuid found in hardware-configuration.nix
-  disk_uuid = "00000000-0000-0000-0000-000000000000";
+  disk_uuid = "5285db9e-380e-43c5-94e4-73607a32bc1f";
 in
 
 {

@@ -1,43 +1,43 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running `nixos-help`).
-
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
     [
       ./hardware-configuration.nix
-
-      # virtualization (qemu, libvirt and podman)
-      ./virtualization.nix
+      ./valheim.nix
+      ./enshrouded.nix
     ];
 
+  #  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [ "mitigations=off" ];
+
   system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/efi";
 
   networking.hostName = "eberron";
+  networking.networkmanager.enable = true;
+  networking.nftables.enable = true;
 
   time.timeZone = "Europe/Rome";
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  #   packages = with pkgs; [
-  #   ];
-  # };
+  i18n.defaultLocale = "en_US.UTF-8";
 
-  environment.systemPackages = with pkgs; [
-    vim 
-    wget
-    curl
-  ];
+  console = {
+    keyMap = "it";
+  };
+
+  services.xserver.enable = false;
+
+  security.virtualisation.flushL1DataCache = "never";
 
   virtualisation = {
+    libvirtd = {
+      enable = true;
+    };
     podman = {
       enable = true;
       dockerCompat = true;
@@ -46,22 +46,25 @@
     };
   };
 
-  # List services that you want to enable:
+  users.users.ikerios = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "libvirt" "podman" ];
+    packages = with pkgs; [ ];
+    #openssh.authorizedKeys.keys = [
+    #  ""
+    #]
+  };
+
+  environment.systemPackages = with pkgs; [ nvd btop ];
 
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "yes";
+    #settings.PasswordAuthentication = false;
+    #settings.KbdInteractiveAuthentication = false;
     openFirewall = true;
   };
 
-  services.cockpit = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  #services.fwupd.enable = true;
-
-  # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
 
@@ -70,5 +73,7 @@
   networking.firewall.enable = true;
   networking.firewall.allowPing = true;
 
-  system.stateVersion = "23.05";
+  system.copySystemConfiguration = true;
+
+  system.stateVersion = "23.11";
 }
